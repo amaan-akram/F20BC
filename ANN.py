@@ -5,7 +5,7 @@ import pandas
 
 
 # ##################### Activation Functions ##############################
-def Null(X):
+def null(X):
     return 0
 
 
@@ -13,15 +13,15 @@ def sigmoid(X):
     return 1/(1+numpy.exp(-X))
 
 
-def Hyperbolic_Tangent(X):
+def hyperbolic_Tangent(X):
     return numpy.tanh(X)
 
 
-def Cosine(X):
+def cosine(X):
     return numpy.cos(X)
 
 
-def Gaussian(X):
+def gaussian(X):
     return numpy.exp(-numpy.square(X)/2)
 
 
@@ -61,7 +61,7 @@ def forward_propagate(network, row, activationfunc):
 
 
 data = [1, 1,2,1, None]
-network = new_network(1,5,2, Gaussian, data)
+network = new_network(1,5,2, gaussian, data)
 print(network)
 
 
