@@ -5,8 +5,11 @@ import pandas
 
 
 # ##################### Activation Functions ##############################
+
 #return 0 for every value
-def Null(X):
+
+
+def null(X):
     return 0
 
 #Return
@@ -14,15 +17,15 @@ def sigmoid(X):
     return 1/(1+numpy.exp(-X))
 
 
-def Hyperbolic_Tangent(X):
+def hyperbolic_Tangent(X):
     return numpy.tanh(X)
 
 
-def Cosine(X):
+def cosine(X):
     return numpy.cos(X)
 
 
-def Gaussian(X):
+def gaussian(X):
     return numpy.exp(-numpy.square(X)/2)
 
 
@@ -83,8 +86,14 @@ data = [1, 1,2,1]
 new_network1 = newnew_network(2,[1,1,1,1,1,1],1)
 
 
+
 print(new_network1)
 print(forward_propagate(new_network1, data, sigmoid))
+
+data = [1, 1,2,1, None]
+network = new_network(1,5,2, gaussian, data)
+print(network)
+
 
 
 
