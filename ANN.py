@@ -4,10 +4,14 @@ import pandas
 
 
 # ##################### Activation Functions ##############################
+
+#return 0 for every value
+
+
 def null(X):
     return 0
 
-
+#Return
 def sigmoid(X):
     return 1 / (1 + numpy.exp(-X))
 
@@ -29,13 +33,32 @@ def gaussian(X):
 # o = output layers,
 # activationfunc = (pick one of the above),
 # data= array of inputs
+
 """def new_network(inp, h, o, activationfunc, data):
+
+def new_network(inp, h, o, activationfunc, data):
+
+
     network = list()
     hidden_layer = [{'weights':[random() for i in range(inp + 1)]} for i in range(h)]
     network.append(hidden_layer)
     output_layer = [{'weights':[random() for i in range(h + 1)]} for i in range(o)]
     network.append(output_layer)
     return forward_propagate(network, data, activationfunc)
+
+
+def newnew_network(inp, h, o):
+
+    print (layers)
+    weights = list()
+
+    for i in range(len(layers)-1):
+        weight = numpy.random.rand(layers[i], layers[i+1])
+        weights.append(weight)
+
+    return weights
+
+
 
 # Calculate neuron activation for an input
 def activate(weights, inputs):
@@ -46,18 +69,29 @@ def activate(weights, inputs):
 
 
 def forward_propagate(network, row, activationfunc):
-    inputs = row
-    for layer in network:
-        new_inputs = []
-        for neuron in layer:
-            activation = activate(neuron['weights'], inputs)
-            neuron['output'] = activationfunc(activation)
-            new_inputs.append(neuron['output'])
-        inputs = new_inputs
-    return inputs
+    activations = row
+
+    for w in network:
+        for i in w:
+            for j in i:
+                # preform matrix mult between activations and weights
+                net_inputs = numpy.dot(activations, j)
+
+        #cal acvtivations
+        activations = activationfunc(net_inputs)
+
+    return activations
 
 
 
+data = [1, 1,2,1]
+#network = new_network(1,5,2, Gaussian, data)
+new_network1 = newnew_network(2,[1,1,1,1,1,1],1)
+
+
+
+print(new_network1)
+print(forward_propagate(new_network1, data, sigmoid))
 
 data = [1, 1,2,1, None]
 network = new_network(1,5,2, gaussian, data)
@@ -125,6 +159,7 @@ def createNN(inp, hid, out, activationFunction):
 network = createNN(5, [3,2,3], 4, sigmoid)
 print(forward(network, [1, 2, 3, 4, 5]))
 print(forward(network, [1, 2, 4]))
+
 
 #print(network)
 
