@@ -98,6 +98,7 @@ network = new_network(1,5,2, gaussian, data)
 print(network)
 """
 
+
 class Neuron:
     def __init__(self, node, layer_type, weights, activationFunc):
         self.node = node
@@ -107,7 +108,7 @@ class Neuron:
         self.activationFunc = activationFunc
 
     def printNeuron(self):
-        print("Neuron : ", self.node, " layer : ", self.type, " weights : ", self.weights)
+        print("Neuron : ", self.node, " layer : ", self.type, " weights : ", self.weights, " bias : ", self.bias)
 
     def compute(self, values):
         totalOfValues = 0
@@ -121,9 +122,7 @@ class Neuron:
 
 
 def updateAllWeights(network, weights):
-    for layer in network:
-        for neuron in layer:
-            neuron.printNeuron()
+    return
 
 
 
@@ -144,24 +143,17 @@ def createNN(inp, hid, out, activationFunction):
     hidLayer = [Neuron(i, "input - hidden", [random() for _ in range(inp)], activationFunction) for i in range(hid[0])]
     hiddenLayers.append(hidLayer)
     network.append(hidLayer)
-    for i in hidLayer:
-        i.printNeuron()
 
     if len(hid) > 1:
         for i in range(1, len(hid)):
             hidLayer = [Neuron(i, "hidden - hidden", [random() for _ in range(len(hiddenLayers[len(hiddenLayers)-1]))],
                                activationFunction) for i in range(hid[i])]
 
-            for j in hidLayer:
-                j.printNeuron()
             hiddenLayers.append(hidLayer)
             network.append(hidLayer)
 
     outputLayer = [Neuron(i, "hidden - output", [random() for _ in range(len(hiddenLayers[len(hiddenLayers)-1]))],
                           activationFunction) for i in range(out)]
-
-    for i in outputLayer:
-        i.printNeuron()
 
     network.append(outputLayer)
     return network
@@ -172,8 +164,10 @@ def createNN(inp, hid, out, activationFunction):
 #print(forward(network, [1, 2, 3, 4, 5]))
 #print(forward(network, [1, 2, 4]))
 
-
-#print(network)
+network = createNN(1, [3, 3, 3], 1, sigmoid)
+for layer in network:
+    for neuron in layer:
+        neuron.printNeuron()
 
 #n_inputs = len(dataset[0]) - 1
 #n_outputs = len(set([row[-1] for row in dataset]))
