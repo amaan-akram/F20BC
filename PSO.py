@@ -21,7 +21,6 @@ class Particle:
               " with velocity ", self.velocity)
 
 
-
 def fitness(particle, inp, pred):
     x = particle.position
     print(x)
@@ -62,8 +61,8 @@ def PSO(swarm_size, velocity, p_best, i_best, g_best, max_iter, dimensions, boun
 
 
 network = ann.createNN(1, [3, 3, 3], 1, sigmoid)
-
-#PSO(swarm_size=10, velocity=1, p_best=1, i_best=1, g_best=1, max_iter=5, dimensions=24, bounds=[-1, 1], file=file)
+print(ann.dimensions_num(1, [3, 3, 3], 1))
+PSO(swarm_size=10, velocity=1, p_best=1, i_best=1, g_best=1, max_iter=5, dimensions=ann.dimensions_num(1, [3, 3, 3], 1), bounds=[-1, 1], file=file)
 
 
 
