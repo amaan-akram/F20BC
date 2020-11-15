@@ -18,9 +18,5 @@ def prepare_data(file):
             inputs.append(float(lines[item]))
 
     f.close()
-    print(inputs)
-    print(exp)
 
     return inputs, exp
-
-prepare_data("Data/1in_cubic.txt")

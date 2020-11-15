@@ -122,11 +122,16 @@ class Neuron:
 
 
 def updateAllWeights(network, weights):
-    weights_n_bias = []
-    """for layer in network:
-        for neuron in layer:"""
+    for layer in network:
+        for neuron in layer:
+            for w in range(len(neuron.weights)):
+                weight = weights.pop()
+                neuron.weights[w] = weight
+                weights.append(weight)
 
-    return
+            weight = weights.pop()
+            neuron.bias = weight
+            weights.append(weight)
 
 
 
@@ -148,17 +153,16 @@ def dimensions_num(inp, hid, out):
     for i in hid:
         num_bias += i
     num_bias = num_bias + out
-    print(num_bias)
+
     connections = [inp]
 
     for i in hid:
         connections.append(i)
     connections.append(out)
-    print(connections)
 
     for i in range(len(connections) - 1):
         num_con += connections[i] * connections[i + 1]
-    print(num_con)
+
     dimensions = num_con + num_bias
 
     return dimensions
@@ -191,11 +195,11 @@ def createNN(inp, hid, out, activationFunction):
 #print(forward(network, [1, 2, 3, 4, 5]))
 #print(forward(network, [1, 2, 4]))
 
-net = createNN(1, [3, 3, 3], 1, sigmoid)
+"""net = createNN(1, [3, 3, 3], 1, sigmoid)
 print("Dimensions : ", dimensions_num(1, [3, 3, 3], 1))
 print(net[3][0].printNeuron())
 print(net[3][0].weights[1])
-print(net[0][0].bias)
+print(net[0][0].bias)"""
 
 #n_inputs = len(dataset[0]) - 1
 #n_outputs = len(set([row[-1] for row in dataset]))
