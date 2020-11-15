@@ -3,6 +3,11 @@ from random import seed
 import numpy as np
 import ANN as ann
 
+def sigmoid(X):
+    return 1 / (1 + np.exp(-X))
+
+
+
 class Particle:
     def __init__(self, position, velocity, num):
         self.position = position
@@ -19,7 +24,7 @@ class Particle:
 
 def fitness(particle):
     # this is the loss function
-    NN = ann.new_network()
+    ann.updateAllWeights(network, weights=0)
 
 
     return
@@ -28,7 +33,7 @@ def fitness(particle):
 def PSO(swarm_size, velocity, p_best, i_best, g_best, max_iter, dimensions, bounds):
     g_best_value = float('inf')
     g_best_pos = np.array([float('inf'), float('inf')])
-    arr = [Particle(np.array([random.uniform(bounds[0],bounds[1]) for i in range(dimensions)]), np.array(random.uniform(0, 1)), i) for i in range(swarm_size)]
+    arr = [Particle(np.array([random.uniform(bounds[0], bounds[1]) for i in range(dimensions)]), np.array(random.uniform(0, 1)), i) for i in range(swarm_size)]
     for i in arr:
         i.particlePos()
     iter = 0
@@ -47,7 +52,10 @@ def PSO(swarm_size, velocity, p_best, i_best, g_best, max_iter, dimensions, boun
         iter += 1
 
 
-PSO(swarm_size=10, velocity=1, p_best=1, i_best=1, g_best=1, max_iter=5, dimensions=2, bounds=[-1, 1])
+network = ann.createNN(1, [3, 3, 3], 1, sigmoid)
+result = ann.forward(network, [1])
+print(result)
+PSO(swarm_size=10, velocity=1, p_best=1, i_best=1, g_best=1, max_iter=5, dimensions=24, bounds=[-1, 1])
 
 
 

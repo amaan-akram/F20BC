@@ -115,6 +115,17 @@ class Neuron:
             totalOfValues += self.weights[i] * values[i]
         return self.activationFunc(self.bias + totalOfValues)
 
+    def changeWeight(self, weights):
+        self.weights = weights
+        return self.weights
+
+
+def updateAllWeights(network, weights):
+    for layer in network:
+        for neuron in layer:
+            neuron.printNeuron()
+
+
 
 def forward(network, inp):
     inputs = inp
@@ -156,9 +167,9 @@ def createNN(inp, hid, out, activationFunction):
     return network
 
 
-network = createNN(5, [3,2,3], 4, sigmoid)
-print(forward(network, [1, 2, 3, 4, 5]))
-print(forward(network, [1, 2, 4]))
+#network = createNN(5, [3,2,3], 4, sigmoid)
+#print(forward(network, [1, 2, 3, 4, 5]))
+#print(forward(network, [1, 2, 4]))
 
 
 #print(network)
