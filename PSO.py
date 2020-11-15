@@ -20,7 +20,7 @@ class Particle:
 def fitness(particle):
     # this is the loss function
     NN = ann.new_network()
-    result =
+
 
     return
 
@@ -43,7 +43,6 @@ def PSO(swarm_size, velocity, p_best, i_best, g_best, max_iter, dimensions, boun
                 g_best_value = particle_fitness
                 g_best_pos = particle.position
 
-        if abs(g_best_value - 1) < 1:
 
         iter += 1
 
