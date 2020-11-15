@@ -168,6 +168,7 @@ def createNN(inp, hid, out, activationFunction):
 
 
 #network = createNN(5, [3,2,3], 4, sigmoid)
+#updateAllWeights(network, weights=0)
 #print(forward(network, [1, 2, 3, 4, 5]))
 #print(forward(network, [1, 2, 4]))
 

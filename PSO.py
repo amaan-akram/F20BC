@@ -1,12 +1,11 @@
 import random
+import math
 from random import seed
 import numpy as np
 import ANN as ann
 
 def sigmoid(X):
     return 1 / (1 + np.exp(-X))
-
-
 
 class Particle:
     def __init__(self, position, velocity, num):
@@ -24,10 +23,9 @@ class Particle:
 
 def fitness(particle):
     # this is the loss function
-    ann.updateAllWeights(network, weights=0)
-
-
-    return
+    x = particle.position
+    fitness_position = 3 * (1 - x[0]) ** 2 * math.exp(-x[0] ** 2 - (x[1] + 1) ** 2) - 10 * ( x[0] / 5 - x[0] ** 3 - x[1] ** 5) * math.exp(-x[0] ** 2 - x[1] ** 2) - 1 / 3 * math.exp( -(x[0] + 1) ** 2 - x[1] ** 2);
+    return fitness_position
 
 
 def PSO(swarm_size, velocity, p_best, i_best, g_best, max_iter, dimensions, bounds):
