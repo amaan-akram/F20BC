@@ -20,3 +20,4 @@ def prepare_data(file):
     f.close()
 
     return inputs, exp
+print(prepare_data("Data/1in_cubic.txt"))

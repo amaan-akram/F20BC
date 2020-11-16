@@ -84,6 +84,7 @@ def PSO(swarm_size, vel_const, p_best, i_best, g_best, max_iter, dimensions, bou
                 g_best_pos = particle.position
 
             print("Particle ", particle.id," : ",particle.pBest_value)
+            print("Particle abc ", particle.id, " : ", particle.pBest[0])
             print("GolbalBest: ", g_best_value)
 
         iter += 1
