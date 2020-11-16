@@ -150,7 +150,7 @@ class Particle:
         return new_velocity
 
 
-def fitness(particle, inp, pred):
+def fitness(particle, inp, exp):
     x = particle.position
     # update weights
     ann.updateAllWeights(network, x)
@@ -163,18 +163,19 @@ def fitness(particle, inp, pred):
     # ANN results
     total = 0
     for i in range(len(values)):
-        total += np.mean((values[i][0] - pred[i]) ** 2)
-    return total / len(values)
+        total += np.mean((values[i][0] - exp[i]) ** 2)
+    return total / len(values), values
 
 
 def PSO(swarm_size, vel_const, p_best, i_best, g_best, max_iter, dimensions, bounds, file):
+    global_values = []
     inputs, exp = dp.prepare_data(file)
     g_best_value = float('inf')
     g_best_pos = np.array([float('inf'), float('inf')])
     arr = [Particle([random.uniform(bounds[0], bounds[1]) for i in range(dimensions)], random.uniform(0, 1), i) for i in
            range(swarm_size)]
-
     iter = 0
+
     while iter < max_iter:
         # get informants
         rand = []
@@ -188,7 +189,8 @@ def PSO(swarm_size, vel_const, p_best, i_best, g_best, max_iter, dimensions, bou
 
         # update velocity
         for particle in arr:
-            particle_fitness = fitness(particle, inputs, exp)
+            particle_fitness, values = fitness(particle, inputs, exp)
+            global_values = values
             if particle.pBest_value > particle_fitness:
                 particle.pBest_value = particle_fitness
                 particle.pBest = particle.position
@@ -197,19 +199,17 @@ def PSO(swarm_size, vel_const, p_best, i_best, g_best, max_iter, dimensions, bou
                 g_best_value = particle_fitness
                 g_best_pos = particle.position
 
-            print("Particle ", particle.id," : ",particle.pBest_value)
-            print("Particle abc ", particle.id, " : ", particle.pBest[0])
-            print("GolbalBest: ", g_best_value)
-
             for i in range(len(particle.position)):
                 newVel = particle.newVelocity(vel_const=vel_const, p_best=p_best, i_best=i_best, g_best=g_best,
                                               i=dimensions)
                 particle.position[i] = particle.position[i] + newVel
 
         iter += 1
+        print("Print", global_values)
+    plots.plotPSO(inputs, global_values, inputs, exp)
 
 
-network = ann.createNN(1, [3, 3, 3], 1, ann.hyperbolic_Tangent)
+network = ann.createNN(1, [2,3,4], 1, ann.hyperbolic_Tangent)
 
 f = "Data/1in_cubic.txt"
 
