@@ -4,11 +4,6 @@ import data_prep as dp
 import matplotlib.pyplot as plot
 
 
-w = 0.85  # inertia constant
-c1 = 1  # cognative constant
-c2 = 2  # social constant
-
-
 class Particle:
     def __init__(self, position, num):
         self.position = position
@@ -27,12 +22,15 @@ class Particle:
                 best_inf_pos = inf.best_position
         return best_inf_pos
 
-    def calc_velocity(self, informant_position):
+    def calc_velocity(self, global_best_position, informant_position, max_vel, max_pb, max_ib, max_gb):
         for i in range(len(self.position)):
-            r1 = random.random()
-            r2 = random.random()
-            new_vel = ((w * self.velocity[i]) + c1 * r1 * (self.best_position[i] - self.position[i]) + (
-                        c2 * r2 * informant_position[i] - self.position[i]))
+            w = random.uniform(0, max_vel)
+            c1 = random.uniform(0, max_pb)
+            c2 = random.uniform(0, max_ib)
+            c3 = random.uniform(0, max_gb)
+            new_vel = ((w * self.velocity[i]) + c1 * (self.best_position[i] - self.position[i]) + (
+                        c2 * (informant_position[i] - self.position[i])) +
+                       (c3 * (global_best_position[i] - self.position[i])))
             self.velocity[i] = new_vel
 
     def update_position(self):
@@ -41,7 +39,6 @@ class Particle:
 
     def fitness(self, inp, outp):
         x = self.position
-
         # update weights
         ann.updateAllWeights(network, x)
         # this is the loss function
@@ -57,20 +54,21 @@ class Particle:
             total += (predValue[0] - realValue) ** 2
         self.error = total / len(values)
 
+
+
         # for i in range(len(values)):
     #  total += np.mean((values[i][0] - outp[i]) ** 2)
     # self.error = total / len(values)
     # return values
 
 
-def PSO(iterations, swarm_size, bounds):
+def PSO(iterations, swarm_size, bounds, max_vel, max_pb, max_ib, max_gb):
     GLOBAL_BEST_POSITION = []
     GLOBAL_BEST_ERROR = float("inf")
     i = 0
     swarm = [Particle([random.uniform(bounds[0], bounds[1]) for k in range(dim)], num=j) for j in range(swarm_size)]
-    for p in swarm:
-        print(len(p.position))
     while i < iterations:
+        print("iter", i)
         # get informants
         for particle in swarm:
             particle.informants = []
@@ -81,13 +79,13 @@ def PSO(iterations, swarm_size, bounds):
             rand.append(n)
 
         for particle in swarm:
+
             for j in rand:
                 particle.informants.append(swarm[j])
 
         for particle in swarm:
-            particle.update_position()
-            particle.fitness(inp, output)
 
+            particle.fitness(inp, output)
             if particle.best_error > particle.error:
                 particle.best_error = particle.error
                 particle.best_position = particle.position
@@ -96,11 +94,16 @@ def PSO(iterations, swarm_size, bounds):
                 GLOBAL_BEST_ERROR = particle.error
                 GLOBAL_BEST_POSITION = particle.position
 
-            particle.calc_velocity(particle.bestInformant())
+        print("ITER : ", i, " Global best error = ", GLOBAL_BEST_ERROR)
+
+        for particle in swarm:
+            particle.calc_velocity(GLOBAL_BEST_POSITION, particle.bestInformant(), max_vel, max_pb, max_ib, max_gb)
+            particle.update_position()
 
         i += 1
 
-        # out1 = original   out2 = result
+    return GLOBAL_BEST_POSITION
+    # out1 = original   out2 = result
 
 
 def plotGraph(inp1, out1, out2):
@@ -111,11 +114,14 @@ def plotGraph(inp1, out1, out2):
 
 network = ann.createNN(1, [3], 1, ann.hyperbolic_Tangent)
 dim = ann.dimensions_num(1, [3], 1)  # MAKE SURE TO CHANGE THIS
-print("DIM",dim)
 inp, output = dp.prepare_data("Data/1in_cubic.txt")
 
-PSO(iterations=10, swarm_size=10, bounds=[-2, 2])
+BEST_OVERALL = PSO(iterations=50, swarm_size=100, bounds=[-5, 5], max_vel=1, max_pb=1.5, max_ib=1.2, max_gb=0.1)
 predicted_values = []
+print(BEST_OVERALL)
+print(len(BEST_OVERALL))
+ann.updateAllWeights(network, BEST_OVERALL)
+
 for i in inp:
     predicted_values.append(ann.forward(network, [i]))
 plotGraph(inp, output, predicted_values)
