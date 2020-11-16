@@ -125,14 +125,8 @@ def updateAllWeights(network, weights):
     for layer in network:
         for neuron in layer:
             for w in range(len(neuron.weights)):
-                weight = weights.pop()
-                neuron.weights[w] = weight
-                weights.append(weight)
-
-            weight = weights.pop()
-            neuron.bias = weight
-            weights.append(weight)
-
+                neuron.weights[w] = weights.pop()
+            neuron.bias = weights.pop()
 
 
 def forward(network, inp):
@@ -187,6 +181,7 @@ def createNN(inp, hid, out, activationFunction):
                           activationFunction) for i in range(out)]
 
     network.append(outputLayer)
+    print(network)
     return network
 
 

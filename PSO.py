@@ -1,41 +1,38 @@
 import random
-import math
-from random import seed
-import numpy as np
 import ANN as ann
 import data_prep as dp
 import matplotlib.pyplot as plot
 
-particle_size = 100  # number of particles
-iterations = 200  # max number of iterations
+
 w = 0.85  # inertia constant
 c1 = 1  # cognative constant
 c2 = 2  # social constant
 
 
 class Particle:
-    def __init__(self, position):
+    def __init__(self, position, num):
         self.position = position
         self.velocity = [random.uniform(0, 1) for _ in range(len(self.position))]
         self.error = float("inf")
         self.best_position = self.position
         self.best_error = self.error
-        self.informant = []
+        self.informants = []
+        self.num = num
 
     def bestInformant(self):
         best = float('inf')
-        for value in self.informant:
-            print(value.best_error)
-            if best > value.best_error:
-                best = value.best_position
-        return best
+        best_inf_pos = self.position
+        for inf in self.informants:
+            if best > inf.best_error:
+                best_inf_pos = inf.best_position
+        return best_inf_pos
 
-    def calc_velocity(self, global_best_particle_position):
+    def calc_velocity(self, informant_position):
         for i in range(len(self.position)):
             r1 = random.random()
             r2 = random.random()
             new_vel = ((w * self.velocity[i]) + c1 * r1 * (self.best_position[i] - self.position[i]) + (
-                        c2 * r2 * global_best_particle_position[i] - self.position[i]))
+                        c2 * r2 * informant_position[i] - self.position[i]))
             self.velocity[i] = new_vel
 
     def update_position(self):
@@ -44,6 +41,7 @@ class Particle:
 
     def fitness(self, inp, outp):
         x = self.position
+
         # update weights
         ann.updateAllWeights(network, x)
         # this is the loss function
@@ -69,9 +67,14 @@ def PSO(iterations, swarm_size, bounds):
     GLOBAL_BEST_POSITION = []
     GLOBAL_BEST_ERROR = float("inf")
     i = 0
-    swarm = [Particle([random.uniform(bounds[0], bounds[1]) for i in range(dim)]) for _ in range(swarm_size)]
+    swarm = [Particle([random.uniform(bounds[0], bounds[1]) for k in range(dim)], num=j) for j in range(swarm_size)]
+    for p in swarm:
+        print(len(p.position))
     while i < iterations:
         # get informants
+        for particle in swarm:
+            particle.informants = []
+
         rand = []
         for j in range(0, (len(swarm) // 2)):
             n = random.randint(0, len(swarm) - 1)
@@ -79,11 +82,11 @@ def PSO(iterations, swarm_size, bounds):
 
         for particle in swarm:
             for j in rand:
-                particle.informant.append(swarm[j])
+                particle.informants.append(swarm[j])
 
         for particle in swarm:
             particle.update_position()
-            particle.fitness(inp, outp)
+            particle.fitness(inp, output)
 
             if particle.best_error > particle.error:
                 particle.best_error = particle.error
@@ -106,15 +109,16 @@ def plotGraph(inp1, out1, out2):
     plot.show()
 
 
-network = ann.createNN(1, [3, 3, 3], 1, ann.hyperbolic_Tangent)
-dim = ann.dimensions_num(1, [3, 3, 3], 1)  # MAKE SURE TO CHANGE THIS
-inp, outp = dp.prepare_data("Data/1in_cubic.txt")
+network = ann.createNN(1, [3], 1, ann.hyperbolic_Tangent)
+dim = ann.dimensions_num(1, [3], 1)  # MAKE SURE TO CHANGE THIS
+print("DIM",dim)
+inp, output = dp.prepare_data("Data/1in_cubic.txt")
 
-PSO(iterations=10, swarm_size=10, bounds=[-10, 10])
+PSO(iterations=10, swarm_size=10, bounds=[-2, 2])
 predicted_values = []
 for i in inp:
     predicted_values.append(ann.forward(network, [i]))
-plotGraph(inp, outp, predicted_values)
+plotGraph(inp, output, predicted_values)
 
 '''
 class Particle:

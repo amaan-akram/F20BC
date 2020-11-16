@@ -19,4 +19,4 @@ def prepare_data(file):
 
     f.close()
 
-    return exp, inputs
+    return inputs, exp
