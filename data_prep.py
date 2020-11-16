@@ -9,13 +9,13 @@ def prepare_data(file):
             if thing == '':
                 continue
             else:
-                lines.append(thing.rstrip('\n'))
+                lines.append(thing.rstrip('\n').rstrip('\t'))
 
     for item in range(len(lines)):
         if item % 2 == 0:
-            exp.append(float(lines[item]))
-        else:
             inputs.append(float(lines[item]))
+        else:
+            exp.append(float(lines[item]))
 
     f.close()
 
