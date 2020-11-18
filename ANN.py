@@ -163,6 +163,7 @@ def dimensions_num(inp, hid, out):
 
 
 def createNN(inp, hid, out, activationFunction):
+    dim = dimensions_num(inp, hid, out)
     network = []
     hiddenLayers = []
     hidLayer = [Neuron(i, "input - hidden", [random() for _ in range(inp)], activationFunction) for i in range(hid[0])]
@@ -182,7 +183,7 @@ def createNN(inp, hid, out, activationFunction):
 
     network.append(outputLayer)
     print(network)
-    return network
+    return network, dim
 
 
 #network = createNN(5, [3,2,3], 4, sigmoid)
