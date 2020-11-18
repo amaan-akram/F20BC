@@ -36,10 +36,10 @@ class Particle:
     def calc_velocity(self, global_best_position, informant_position, max_vel, max_pb, max_ib, max_gb):
         for i in range(len(self.position)):
             # gets the constants by getting a random number between 0 and the proportion set out by the parameters.
-            w = random.uniform(0, max_vel)
-            c1 = random.uniform(0, max_pb)
-            c2 = random.uniform(0, max_ib)
-            c3 = random.uniform(0, max_gb)
+            w = random.uniform(0.5, max_vel)
+            c1 = random.uniform(0.5, max_pb)
+            c2 = random.uniform(0.5, max_ib)
+            c3 = random.uniform(0.5, max_gb)
             # calculate velocity
             new_vel = ((w * self.velocity[i]) +
                        (c1 * (self.best_position[i] - self.position[i])) +
@@ -94,7 +94,7 @@ def PSO(iterations, swarm_size, dim, bounds, max_vel, max_pb, max_ib, max_gb):
         for particle in swarm:
             rand = []
             for j in range(0, random.randint(0, swarm_size)):
-                n = random.randint(0, len(swarm) - 1)
+                n = random.randint(0, 3)
                 rand.append(n)
             for j in rand:
                 particle.informants.append(swarm[j])
@@ -133,7 +133,7 @@ def plotGraph(inp1, out1, out2):
 network, dim = ann.createNN(1, [7], 1, ann.hyperbolic_Tangent)
 inp, output = dp.prepare_data("Data/1in_cubic.txt")
 
-BEST_OVERALL = PSO(iterations=500, swarm_size=50, bounds=[-1, 1], dim=dim, max_vel=0.1, max_pb=1.4, max_ib=1.2, max_gb=1.4)
+BEST_OVERALL = PSO(iterations=200, swarm_size=20, bounds=[-10, 10], dim=dim, max_vel=0.33, max_pb=0.43, max_ib=1.5, max_gb=0.3)
 predicted_values = []
 print(BEST_OVERALL[0])
 print(len(BEST_OVERALL))
