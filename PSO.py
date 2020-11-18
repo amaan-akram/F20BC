@@ -100,7 +100,7 @@ def PSO(iterations, swarm_size, dim, bounds, max_vel, max_pb, max_ib, max_gb):
         for particle in swarm:
             rand = []
             for j in range(0, random.randint(0, swarm_size)):
-                n = random.randint(0, len(swarm) - 1)
+                n = random.randint(0, 3)
                 rand.append(n)
             for j in rand:
                 particle.informants.append(swarm[j])
@@ -140,6 +140,7 @@ network, dim = ann.createNN(1, [7], 1, ann.hyperbolic_Tangent)
 inp, output = dp.prepare_data("Data/1in_cubic.txt")
 
 BEST_OVERALL = PSO(iterations=200, swarm_size=100, bounds=[-20, 20], dim=dim, max_vel=0.85, max_pb=math.pi, max_ib=0.1, max_gb=(4-math.pi))
+
 predicted_values = []
 print(BEST_OVERALL[0])
 print(len(BEST_OVERALL))
