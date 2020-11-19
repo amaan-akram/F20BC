@@ -99,6 +99,9 @@ def addInformants(swarm, swarm_size, inf):
             particle.informants.append(swarm[j])
 
 
+ERROR_ARR = []
+
+
 # Main PSO method
 # Takes in iterations, number of particles, bounds for the random locations of the particles and
 # the portions of velocity, best particle, informant, global positions
@@ -124,7 +127,6 @@ def PSO(iterations, swarm_size,inf_num, dim, bounds, max_vel, max_pb, max_ib, ma
         # If the there is a new best the new position and err will be used.
         for particle in swarm:
             particle.fitness(inp, output)
-
             if particle.best_error > particle.error:
                 particle.best_error = particle.error
                 particle.best_position = particle.position
@@ -153,7 +155,7 @@ def PSO(iterations, swarm_size,inf_num, dim, bounds, max_vel, max_pb, max_ib, ma
 def plotGraph(inp1, out1, out2, title):
     inputs = []
     for i in inp1:
-        if isinstance(i, list):
+        if len(i) > 2:
             inputs = [j for j in range(len(out1))]
         else:
             inputs = inp1
@@ -167,9 +169,9 @@ def plotGraph(inp1, out1, out2, title):
 # returns the network structure with the number of dimensions the network has
 network, dim = ann.createNN(1, [7], 1, ann.hyperbolic_Tangent)
 # separates the input data from the output data given a file.
-inp, output = dp.prepare_data("Data/1in_cubic.txt")
-print(inp, output)
+inp, output = dp.prepare_data("Data/1in_linear.txt")
 
+# run PSO to find the best position
 BEST_OVERALL = PSO(iterations=200, swarm_size=100, bounds=[-20, 20],
                    dim=dim, inf_num=50, max_vel=0.85, max_pb=math.pi, max_ib=0.1, max_gb=(4-math.pi))
 
