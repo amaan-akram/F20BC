@@ -1,22 +1,17 @@
 def prepare_data(file):
     lines = []
     inputs = []
+    group = []
     exp = []
     f = open(file, "r")
     for line in f:
-        line = line.split(' ')
-        for thing in line:
-            if thing == '':
-                continue
-            else:
-                lines.append(thing.rstrip('\n').rstrip('\t'))
-
-    for item in range(len(lines)):
-        if item % 2 == 0:
-            inputs.append(float(lines[item]))
+        line = line.split()
+        if len(line) > 2:
+            inputs.append([float(line[0]), float(line[1])])
         else:
-            exp.append(float(lines[item]))
-
+            inputs.append([float(line[0])])
+        exp.append(float(line[len(line)-1]))
+    print(inputs)
+    print(exp)
     f.close()
-
     return inputs, exp

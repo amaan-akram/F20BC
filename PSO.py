@@ -71,7 +71,7 @@ class Particle:
         ann.updateAllWeights(network, x)
         values = []
         for i in inp:
-            result = ann.forward(network, [i])
+            result = ann.forward(network, i)
             values.append(result)
         total = 0
 
@@ -150,9 +150,16 @@ def PSO(iterations, swarm_size,inf_num, dim, bounds, max_vel, max_pb, max_ib, ma
 
 
 # used to plot and compare the file data and the input data on the ann with pso
-def plotGraph(inp1, out1, out2):
-    plot.plot(inp1, out1)
-    plot.plot(inp1, out2)
+def plotGraph(inp1, out1, out2, title):
+    inputs = []
+    for i in inp1:
+        if isinstance(i, list):
+            inputs = [j for j in range(len(out1))]
+        else:
+            inputs = inp1
+    plot.suptitle(title)
+    plot.plot(inputs, out1)
+    plot.plot(inputs, out2)
     plot.show()
 
 
@@ -160,7 +167,8 @@ def plotGraph(inp1, out1, out2):
 # returns the network structure with the number of dimensions the network has
 network, dim = ann.createNN(1, [7], 1, ann.hyperbolic_Tangent)
 # separates the input data from the output data given a file.
-inp, output = dp.prepare_data("Data/1in_linear.txt")
+inp, output = dp.prepare_data("Data/1in_cubic.txt")
+print(inp, output)
 
 BEST_OVERALL = PSO(iterations=200, swarm_size=100, bounds=[-20, 20],
                    dim=dim, inf_num=50, max_vel=0.85, max_pb=math.pi, max_ib=0.1, max_gb=(4-math.pi))
@@ -169,8 +177,7 @@ BEST_OVERALL = PSO(iterations=200, swarm_size=100, bounds=[-20, 20],
 predicted_values = []
 # update the weights to the best position values generated from the pso
 ann.updateAllWeights(network, BEST_OVERALL)
-
 # loop through the inputs of the file and insert them into the ann then plot the graph
 for i in inp:
-    predicted_values.append(ann.forward(network, [i]))
-plotGraph(inp, output, predicted_values)
+    predicted_values.append(ann.forward(network, i))
+plotGraph(inp, output, predicted_values, "Cubic")
