@@ -102,7 +102,7 @@ def addInformants(swarm, swarm_size, inf):
 # Main PSO method
 # Takes in iterations, number of particles, bounds for the random locations of the particles and
 # the portions of velocity, best particle, informant, global positions
-def PSO(iterations, swarm_size, dim, bounds, max_vel, max_pb, max_ib, max_gb, inf_num):
+def PSO(iterations, swarm_size,inf_num, dim, bounds, max_vel, max_pb, max_ib, max_gb):
     # Init GLOBAL best and err as empty and infinite
     GLOBAL_BEST_POSITION = []
     GLOBAL_BEST_ERROR = float("inf")
@@ -163,7 +163,7 @@ network, dim = ann.createNN(1, [7], 1, ann.hyperbolic_Tangent)
 inp, output = dp.prepare_data("Data/1in_linear.txt")
 
 BEST_OVERALL = PSO(iterations=200, swarm_size=100, bounds=[-20, 20],
-                   dim=dim, max_vel=0.85, max_pb=math.pi, max_ib=0.1, max_gb=(4-math.pi), inf_num=50)
+                   dim=dim, inf_num=50, max_vel=0.85, max_pb=math.pi, max_ib=0.1, max_gb=(4-math.pi))
 
 # set up the predicted values list.
 predicted_values = []
