@@ -89,10 +89,10 @@ class Particle:
 
 # Loop through each particle and append a random particle to another particles informant list
 # Each particle will have a random number of particles between 1 and the swarm size
-def addInformants(swarm, swarm_size):
+def addInformants(swarm, swarm_size, inf):
     for particle in swarm:
         rand = []
-        for j in range(0, random.randint(1, swarm_size)):
+        for j in range(1, inf):
             n = random.randint(0, swarm_size - 1)
             rand.append(n)
         for j in rand:
@@ -102,7 +102,7 @@ def addInformants(swarm, swarm_size):
 # Main PSO method
 # Takes in iterations, number of particles, bounds for the random locations of the particles and
 # the portions of velocity, best particle, informant, global positions
-def PSO(iterations, swarm_size, dim, bounds, max_vel, max_pb, max_ib, max_gb):
+def PSO(iterations, swarm_size, dim, bounds, max_vel, max_pb, max_ib, max_gb, inf_num):
     # Init GLOBAL best and err as empty and infinite
     GLOBAL_BEST_POSITION = []
     GLOBAL_BEST_ERROR = float("inf")
@@ -117,7 +117,7 @@ def PSO(iterations, swarm_size, dim, bounds, max_vel, max_pb, max_ib, max_gb):
             particle.informants = []
 
         # give each particle a group of informants
-        addInformants(swarm, swarm_size)
+        addInformants(swarm, swarm_size, inf_num)
 
         # Main section of the algorithm - Loops through all the particles and gets the fitness for each one.
         # It will then compare it to the particles personal best fitness followed by the global best
@@ -162,7 +162,8 @@ network, dim = ann.createNN(1, [7], 1, ann.hyperbolic_Tangent)
 # separates the input data from the output data given a file.
 inp, output = dp.prepare_data("Data/1in_linear.txt")
 
-BEST_OVERALL = PSO(iterations=200, swarm_size=100, bounds=[-20, 20], dim=dim, max_vel=0.85, max_pb=math.pi, max_ib=0.1, max_gb=(4-math.pi))
+BEST_OVERALL = PSO(iterations=200, swarm_size=100, bounds=[-20, 20],
+                   dim=dim, max_vel=0.85, max_pb=math.pi, max_ib=0.1, max_gb=(4-math.pi), inf_num=50)
 
 # set up the predicted values list.
 predicted_values = []
