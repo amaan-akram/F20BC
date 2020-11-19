@@ -87,6 +87,18 @@ class Particle:
 # self.error = total / len(values)
 # return values
 
+# Loop through each particle and append a random particle to another particles informant list
+# Each particle will have a random number of particles between 1 and the swarm size
+def addInformants(swarm, swarm_size):
+    for particle in swarm:
+        rand = []
+        for j in range(0, random.randint(1, swarm_size)):
+            n = random.randint(0, swarm_size - 1)
+            rand.append(n)
+        for j in rand:
+            particle.informants.append(swarm[j])
+
+
 # Main PSO method
 # Takes in iterations, number of particles, bounds for the random locations of the particles and
 # the portions of velocity, best particle, informant, global positions
@@ -104,15 +116,8 @@ def PSO(iterations, swarm_size, dim, bounds, max_vel, max_pb, max_ib, max_gb):
         for particle in swarm:
             particle.informants = []
 
-        # Loop through each particle and append a random particle to another particles informant list
-        # Each particle will have a random number of particles between 1 and the swarm size
-        for particle in swarm:
-            rand = []
-            for j in range(0, random.randint(1, swarm_size)):
-                n = random.randint(0, swarm_size-1)
-                rand.append(n)
-            for j in rand:
-                particle.informants.append(swarm[j])
+        # give each particle a group of informants
+        addInformants(swarm, swarm_size)
 
         # Main section of the algorithm - Loops through all the particles and gets the fitness for each one.
         # It will then compare it to the particles personal best fitness followed by the global best
