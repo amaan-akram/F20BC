@@ -19,6 +19,7 @@ class Particle:
         self.error = float("inf")
         self.best_position = self.position
         self.best_error = self.error
+        self.error_arr = []
         self.informants = []
         self.num = num
 
@@ -66,7 +67,7 @@ class Particle:
     # Fitness function that makes use of the mean squared error. This is the loss function for PSO
     # Calculates the current error for a particle after the weights and biases have been updated with the positions of
     # the particle
-    def fitness(self, inp, outp):
+    def fitness(self, inp, outp, network):
         x = self.position
         ann.updateAllWeights(network, x)
         values = []
@@ -105,16 +106,18 @@ ERROR_ARR = []
 # Main PSO method
 # Takes in iterations, number of particles, bounds for the random locations of the particles and
 # the portions of velocity, best particle, informant, global positions
-def PSO(iterations, swarm_size,inf_num, dim, bounds, max_vel, max_pb, max_ib, max_gb):
+def PSO(iterations, swarm_size,inf_num, dim, bounds, max_vel, max_pb, max_ib, max_gb, inp, output, network):
     # Init GLOBAL best and err as empty and infinite
     GLOBAL_BEST_POSITION = []
     GLOBAL_BEST_ERROR = float("inf")
+    GLOBAL_ERROR_ARR = []
     i = 0
     # Create a swarm of particles with random positions.
     # The number of particles are set out before algorithm starts - swarmsize
     swarm = [Particle([random.uniform(bounds[0], bounds[1]) for k in range(dim)], num=j) for j in range(swarm_size)]
     # Loop through all the iterations
     while i < iterations:
+
         # empty the informants list on the next iteration
         for particle in swarm:
             particle.informants = []
@@ -126,7 +129,8 @@ def PSO(iterations, swarm_size,inf_num, dim, bounds, max_vel, max_pb, max_ib, ma
         # It will then compare it to the particles personal best fitness followed by the global best
         # If the there is a new best the new position and err will be used.
         for particle in swarm:
-            particle.fitness(inp, output)
+            particle.fitness(inp, output, network)
+            particle.error_arr.append(particle.error)
             if particle.best_error > particle.error:
                 particle.best_error = particle.error
                 particle.best_position = particle.position
@@ -147,6 +151,13 @@ def PSO(iterations, swarm_size,inf_num, dim, bounds, max_vel, max_pb, max_ib, ma
         # increment
         i += 1
 
+    for particle in swarm[0:10]:
+        plot.plot([j for j in range(len(particle.error_arr))], particle.error_arr)
+        plot.suptitle("MSE for Particle :" + str(particle.num))
+        plot.xlabel("Epoch")
+        plot.ylabel("Error")
+        plot.show()
+
     return GLOBAL_BEST_POSITION
     # out1 = original   out2 = result
 
@@ -155,7 +166,7 @@ def PSO(iterations, swarm_size,inf_num, dim, bounds, max_vel, max_pb, max_ib, ma
 def plotGraph(inp1, out1, out2, title):
     inputs = []
     for i in inp1:
-        if len(i) > 2:
+        if len(i) >= 2:
             inputs = [j for j in range(len(out1))]
         else:
             inputs = inp1
@@ -165,15 +176,15 @@ def plotGraph(inp1, out1, out2, title):
     plot.show()
 
 
-# create the network, number of input neurons, an array of hidden layer neurons and a number of output neurons.
+"""# create the network, number of input neurons, an array of hidden layer neurons and a number of output neurons.
 # returns the network structure with the number of dimensions the network has
-network, dim = ann.createNN(1, [7], 1, ann.hyperbolic_Tangent)
+network, dim = ann.createNN(1, [7], 1, ann.cosine)
 # separates the input data from the output data given a file.
-inp, output = dp.prepare_data("Data/1in_linear.txt")
-
+inp, output = dp.prepare_data("Data/1in_sine.txt")
+print("Dim =", dim)
 # run PSO to find the best position
 BEST_OVERALL = PSO(iterations=200, swarm_size=100, bounds=[-20, 20],
-                   dim=dim, inf_num=50, max_vel=0.85, max_pb=math.pi, max_ib=0.1, max_gb=(4-math.pi))
+                   dim=dim, inf_num=50, max_vel=0.85, max_pb=3, max_ib=0.1, max_gb=1)
 
 # set up the predicted values list.
 predicted_values = []
@@ -182,4 +193,7 @@ ann.updateAllWeights(network, BEST_OVERALL)
 # loop through the inputs of the file and insert them into the ann then plot the graph
 for i in inp:
     predicted_values.append(ann.forward(network, i))
-plotGraph(inp, output, predicted_values, "Cubic")
+plotGraph(inp, output, predicted_values, "Sine")"""
+
+
+
